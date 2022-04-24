@@ -1,0 +1,20 @@
+#monsImgContainer {
+    display: flex;
+    justify-content: end;
+    border: solid 2px red;
+    height: 83px;
+}
+
+#monsImgContainer img {
+    padding: 10px;
+    width: 80px;
+}
+
+#mainImgContainer {
+    width: 1080px;
+    height: 1352px;
+    margin: 0 auto;
+    background-image: url('../../mainImage2.png');
+}
+
+

@@ -1,0 +1,7 @@
+#difficultyContainer {
+    width: 80%;
+    min-width: 300px;
+    max-width: 500px;
+    margin: 0 auto;
+    border: solid 2px black;
+}
