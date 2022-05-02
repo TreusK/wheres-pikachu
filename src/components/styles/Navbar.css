@@ -1,3 +1,7 @@
 .Navbar {
     border-bottom: solid 2px blue;
 }
+
+#pikachuIconLogo {
+    max-height: 70px;
+}

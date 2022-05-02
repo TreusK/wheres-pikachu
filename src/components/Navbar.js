@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import pikachuIcon from '../pika.png';
 import './styles/Navbar.css';
 
 function Navbar() {
@@ -6,7 +7,7 @@ function Navbar() {
         <nav className="navbar Navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link className="navbar-item" to='/'>
-                    <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"/>
+                    <img id='pikachuIconLogo' src={pikachuIcon}/>
                 </Link>
             </div>
 

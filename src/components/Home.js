@@ -6,8 +6,7 @@ const objOfMons = {
   easy: ['chikorita', 'voltorb', 'squirtle'],
   normal: ['charmander', 'bulbasaur', 'totodile'],
   hard: ['gastly', 'dragonite', 'tauros'],
-  impossible: ['pikachu'],
-  //random returns an array of 3 random numbers between 0 and 50, need to transform numbers into pokemon names somewhere
+  //random returns an array of 3 random numbers between 0 and 50, the pokeapi can take numbers too so it just werks
   random: function() {
     let arrOfThreeRandoms = [];
     do {
@@ -20,8 +19,10 @@ const objOfMons = {
   },
 }
 
+//Component Home
 function Home({ setMonsToFind }) {
 
+  //Setting the monsToFind state depending on the difficulty button pressed
   function setMons(e) {
     let textValue = e.target.innerText.toLowerCase();
     if(textValue != 'random') {
@@ -46,10 +47,6 @@ function Home({ setMonsToFind }) {
         <div className='btnContainer'>
           <img/>
           <Link to='/game' className='button' onClick={setMons}>Hard</Link>
-        </div>
-        <div className='btnContainer'>
-          <img/>
-          <Link to='/game' className='button' onClick={setMons}>Impossible</Link>
         </div>
         <div className='btnContainer'>
           <img/>

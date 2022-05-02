@@ -1,6 +1,7 @@
+/* 3 pokemon to find container styles */
 #monsImgContainer {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     border: solid 2px red;
     height: 83px;
 }
@@ -10,11 +11,53 @@
     width: 80px;
 }
 
+
+/* Main Image styles */
 #mainImgContainer {
-    width: 1080px;
-    height: 1352px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 95%;
     margin: 0 auto;
-    background-image: url('../../mainImage2.png');
 }
+
+#mainImg {
+    width: 100%;
+}
+
+
+/* Context menu styles styles */
+.contextMenuContainer {
+    position: absolute;
+}
+
+.tagCircle {
+    width: 80px;
+    height: 80px;
+    border: solid 4px black;
+    border-radius: 50%;
+    background-color: rgba(169, 169, 169, 0.66);
+}
+
+.charsListMenu {
+    width: 250px;
+    background-color: aliceblue;
+    border: solid 2px black;
+}
+
+.charsListMenu div {
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.charsListMenu img {
+    width: 80px;
+}
+
+.charsListMenu div:hover {
+    background-color: aquamarine;
+}
+
 
 
