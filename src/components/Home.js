@@ -3,9 +3,9 @@ import './styles/Home.css';
 
 //Object to keep the values of mons to search depending on the difficulty
 const objOfMons = {
-  easy: ['chikorita', 'voltorb', 'squirtle'],
-  normal: ['charmander', 'bulbasaur', 'totodile'],
-  hard: ['gastly', 'dragonite', 'tauros'],
+  easy: ['wobbuffet', 'electrode', 'wailord'],
+  normal: ['mew', 'kabutops', 'hitmontop'],
+  hard: ['shuckle', 'doduo', 'yamask'],
   //random returns an array of 3 random numbers between 0 and 50, the pokeapi can take numbers too so it just werks
   random: function() {
     let arrOfThreeRandoms = [];
@@ -34,7 +34,7 @@ function Home({ setMonsToFind }) {
 
   return (
     <div className="Home">
-      details of shit here
+      Extra fluff here
       <div id='difficultyContainer' className='box'>
         <div className='btnContainer'>
           <img/>

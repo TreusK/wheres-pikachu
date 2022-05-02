@@ -1,5 +1,6 @@
 import './styles/Game.css';
 import mainImage from '../mainImage2.png';
+//To Do: Have the coords of mons obj in the backend to validate and call it every time I guess (or maybe once with the 3 mons)
 import coordinatesOfPokemon from './coordinatesOfPokemon.js';
 import { useState, useEffect, setState } from 'react';
 
@@ -71,24 +72,26 @@ function Game({monsToFind}) {
   return (
     <div className="Game">
       <div id='monsImgContainer'>
-        <img src={monsToFindImgs.mon1} alt='mon'/>
-        <img src={monsToFindImgs.mon2} alt='mon'/>
-        <img src={monsToFindImgs.mon3} alt='mon'/>
+        <img src={monsToFindImgs.mon1} alt='...'/>
+        <img src={monsToFindImgs.mon2} alt='...'/>
+        <img src={monsToFindImgs.mon3} alt='...'/>
       </div>
       <div id='mainImgContainer' >
         <img id='mainImg' src={mainImage} onClick={handleGameClick}/>
-        {showTagCircle && <ContextMenu currentSize={currentSize} coordinates={coords} monsToFindImgs={monsToFindImgs} monsToFind={monsToFind}/>}
+        {showTagCircle && <ContextMenu currentSize={currentSize} coordinates={coords} monsToFindImgs={monsToFindImgs} monsToFind={monsToFind} setShowTagCircle={setShowTagCircle}/>}
       </div>
     </div>
   );
 }
 
 
-function ContextMenu({currentSize, coordinates, monsToFindImgs, monsToFind}) {
+function ContextMenu({currentSize, coordinates, monsToFindImgs, monsToFind, setShowTagCircle}) {
   function handleContextMenuClick(e) {
     let name = getNameOfMon(e);
     let origXY = [coordinatesOfPokemon[name].x, coordinatesOfPokemon[name].y];
     let newXY = calculateNewXY(origXY[0], origXY[1], currentSize.x, currentSize.y);
+    validatePokemon(name, newXY);
+    setShowTagCircle(false);
   }
 
   function getNameOfMon(event) {
@@ -105,8 +108,16 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, monsToFind}) {
     return [newX, newY];
   }
 
-  function validatePokemon(name, coords) {
-    
+  function validatePokemon(name, monCoords) {
+    let minX = monCoords[0]-30;
+    let maxX = monCoords[0]+30;
+    let minY = monCoords[1]-30;
+    let maxY = monCoords[1]+30;
+    if(coordinates.x >= minX && coordinates.x <= maxX && coordinates.y >= minY && coordinates.y <= maxY) {
+      console.log('You found ' + name + '!!!');
+    } else {
+      console.log('Try again!');
+    }
   }
 
   return(

@@ -2,13 +2,13 @@
 #monsImgContainer {
     display: flex;
     justify-content: flex-end;
-    border: solid 2px red;
     height: 83px;
+    margin-bottom: 10px;
 }
 
 #monsImgContainer img {
-    padding: 10px;
     width: 80px;
+    margin-right: 10px;
 }
 
 
