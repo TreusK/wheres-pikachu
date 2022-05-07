@@ -1,0 +1,35 @@
+.Leaderboard h1{
+    text-align: center;
+    padding: 20px;
+}
+
+.Leaderboard img {
+    border-radius: 10px;
+}
+
+
+.Top30 {
+    height: 600px;
+    margin: 20px;
+}
+
+.scoreDiv {
+    display: flex;
+    border-bottom: 1px rgba(86, 86, 246, 0.827) solid;
+    padding: 10px;
+}
+
+.scoreDiv:hover {
+    border-bottom: 1px black solid;
+    background-color: bisque;
+}
+
+.scoreDiv .scoreRank {
+    flex: 1;
+}
+.scoreDiv .scoreName {
+    flex: 8;
+}
+.scoreDiv .scoreTime {
+    flex: 2;
+}

@@ -86,6 +86,7 @@ function Game({monsToFind}) {
                               monsToFindImgs={monsToFindImgs} localMonsToFind={localMonsToFind} 
                               setShowTagCircle={setShowTagCircle} setStyleValidation={setStyleValidation}
                               setLocalMonsToFind={setLocalMonsToFind} setMonsToFindImgs={setMonsToFindImgs}
+                              monsToFind={monsToFind}
                               />}
       </div>
     </div>
@@ -95,7 +96,7 @@ function Game({monsToFind}) {
 
 
 
-function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation}) {
+function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation, monsToFind}) {
   //Main function for when the context menu is clicked
   function handleContextMenuClick(e) {
     let name = getNameOfMon(e);
@@ -137,7 +138,7 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
       setLocalMonsToFind(monsArr);
       setMonsToFindImgs(monsImgsArr);
       if(monsArr.length == 0) {
-        gameOver();
+        gameOver(monsToFind);
       }
     } else {
       validationColor('red');
@@ -153,9 +154,18 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
   }
 
   //Helper function for game over (user won)
-  function gameOver() {
-    //Change state up in Game that shows the form to add your name and a button to go to the leaderboard
-    console.log('GAME OVER');
+  function gameOver(originalMons) {
+    let diffic = '';
+    if(originalMons.join('') == 'wobbuffetelectrodewailord') {
+      diffic = 'easy';
+    } else if(originalMons.join('') == 'mewkabutopshitmontop') {
+      diffic = 'normal';
+    } else if(originalMons.join('') == 'shuckledoduoyamask') {
+      diffic = 'hard';
+    } else {
+      diffic = 'random';
+    }
+    console.log(diffic);
   }
 
   return(
