@@ -3,6 +3,7 @@ import mainImage from '../mainImage2.png';
 //To Do: Have the coords of mons obj in the backend to validate and call it every time I guess (or maybe once with the 3 mons)
 import coordinatesOfPokemon from './coordinatesOfPokemon.js';
 import { useState, useEffect, setState } from 'react';
+import 'bulma/css/bulma.css';
 
 const originalWidth = 1080;
 const originalHeight = 1352;
@@ -22,11 +23,13 @@ function Game({monsToFind}) {
     y: '',
   })
   ///save the images of the mons after fetching from pokeapi
-  const [monsToFindImgs, setMonsToFindImgs] = useState({
-    mon1: '',
-    mon2: '', 
-    mon3: '',
-  });
+  const [monsToFindImgs, setMonsToFindImgs] = useState([]);
+  ///copy of monsToFind state, to manipulate freely here
+  const [localMonsToFind, setLocalMonsToFind] = useState([...monsToFind]);
+  ///style state to inform if the pokemon was found or not
+  const [styleValidation, setStyleValidation] = useState({
+    backgroundColor: 'white',
+  })
 
   //Async function to fetch a single pokemon object from PokeApi
   async function fetchImage(nameOfMon) {
@@ -36,11 +39,11 @@ function Game({monsToFind}) {
   //Async function to fetch 3 times, and set the images in monsToFindImgs
   async function fetch3Images() {
     let arrOfRes = await Promise.all([fetchImage(monsToFind[0]), fetchImage(monsToFind[1]), fetchImage(monsToFind[2])]);
-    let imgs = {
-      mon1: arrOfRes[0].sprites.front_default,
-      mon2: arrOfRes[1].sprites.front_default,
-      mon3: arrOfRes[2].sprites.front_default,
-    }
+    let imgs = [
+      arrOfRes[0].sprites.front_default,
+      arrOfRes[1].sprites.front_default,
+      arrOfRes[2].sprites.front_default,
+    ]
     setMonsToFindImgs(imgs);
   }
 
@@ -70,22 +73,30 @@ function Game({monsToFind}) {
 
   //Return Component
   return (
-    <div className="Game">
+    <div id="Game" style={styleValidation}>
       <div id='monsImgContainer'>
-        <img src={monsToFindImgs.mon1} alt='...'/>
-        <img src={monsToFindImgs.mon2} alt='...'/>
-        <img src={monsToFindImgs.mon3} alt='...'/>
+        {monsToFindImgs.map(elem => 
+            <img src={elem} alt='...'/>
+          )}
       </div>
       <div id='mainImgContainer' >
         <img id='mainImg' src={mainImage} onClick={handleGameClick}/>
-        {showTagCircle && <ContextMenu currentSize={currentSize} coordinates={coords} monsToFindImgs={monsToFindImgs} monsToFind={monsToFind} setShowTagCircle={setShowTagCircle}/>}
+        {showTagCircle && <ContextMenu 
+                              currentSize={currentSize} coordinates={coords} 
+                              monsToFindImgs={monsToFindImgs} localMonsToFind={localMonsToFind} 
+                              setShowTagCircle={setShowTagCircle} setStyleValidation={setStyleValidation}
+                              setLocalMonsToFind={setLocalMonsToFind} setMonsToFindImgs={setMonsToFindImgs}
+                              />}
       </div>
     </div>
   );
 }
 
 
-function ContextMenu({currentSize, coordinates, monsToFindImgs, monsToFind, setShowTagCircle}) {
+
+
+function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation}) {
+  //Main function for when the context menu is clicked
   function handleContextMenuClick(e) {
     let name = getNameOfMon(e);
     let origXY = [coordinatesOfPokemon[name].x, coordinatesOfPokemon[name].y];
@@ -94,51 +105,73 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, monsToFind, setS
     setShowTagCircle(false);
   }
 
+  //Helper function to get the name of the mon in the context menu clicked
   function getNameOfMon(event) {
     let index;
     (event.target.tagName != 'DIV') 
       ? index = +event.target.parentElement.classList[0][1]
       : index = +event.target.classList[0][1];
-    return monsToFind[index];
+    return localMonsToFind[index];
   }
 
+  //Helper function to know where the relative x, y coordinats are now
   function calculateNewXY(originalX, originalY, newWidth, newHeight) {
     let newX = newWidth * originalX / originalWidth;
     let newY = newHeight * originalY / originalHeight;
     return [newX, newY];
   }
 
+  //Helper function to validate a click, if the user found the right pokemon
   function validatePokemon(name, monCoords) {
     let minX = monCoords[0]-30;
     let maxX = monCoords[0]+30;
     let minY = monCoords[1]-30;
     let maxY = monCoords[1]+30;
     if(coordinates.x >= minX && coordinates.x <= maxX && coordinates.y >= minY && coordinates.y <= maxY) {
-      console.log('You found ' + name + '!!!');
+      validationColor('green');
+      let index = localMonsToFind.indexOf(name);
+      let monsImgsArr = [...monsToFindImgs];
+      let monsArr = [...localMonsToFind];
+      monsImgsArr.splice(index, 1);
+      monsArr.splice(index, 1);
+      setLocalMonsToFind(monsArr);
+      setMonsToFindImgs(monsImgsArr);
+      if(monsArr.length == 0) {
+        gameOver();
+      }
     } else {
-      console.log('Try again!');
+      validationColor('red');
     }
+  }
+
+  //Helper function to change style depending on right or wrong pokemon
+  function validationColor(clr) {
+    setStyleValidation({ backgroundColor: clr });
+    setTimeout(() => {
+      setStyleValidation({ backgroundColor: 'white', transition: 'all 0.5s ease' });
+    }, 500);
+  }
+
+  //Helper function for game over (user won)
+  function gameOver() {
+    //Change state up in Game that shows the form to add your name and a button to go to the leaderboard
+    console.log('GAME OVER');
   }
 
   return(
     <div className='contextMenuContainer' style={{top: `${coordinates.y-40}px`, left: `${coordinates.x-40}px`}}>
       <div className='tagCircle'></div>
       <div className='charsListMenu'>
-        <div onClick={handleContextMenuClick} className='p0'>
-          <img src={monsToFindImgs.mon1} alt={'mon'}/>
-          <span>{monsToFind[0][0].toUpperCase() + monsToFind[0].slice(1)}</span>
-        </div>
-        <div onClick={handleContextMenuClick} className='p1'>
-          <img src={monsToFindImgs.mon2} alt='mon'/>
-          <span>{monsToFind[1][0].toUpperCase() + monsToFind[1].slice(1)}</span>
-        </div>
-        <div onClick={handleContextMenuClick} className='p2'>
-          <img src={monsToFindImgs.mon3} alt='mon'/>
-          <span>{monsToFind[2][0].toUpperCase() + monsToFind[2].slice(1)}</span>
-        </div>
+        {monsToFindImgs.map((mon, index) => 
+          <div onClick={handleContextMenuClick} className={'p' + index} key={index}>
+            <img src={mon} alt={'mon'}/>
+            <span>{localMonsToFind[index][0].toUpperCase() + localMonsToFind[index].slice(1)}</span>
+          </div>)
+        }
       </div>
     </div> 
   )
 }
+
 
 export default Game;
