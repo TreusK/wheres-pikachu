@@ -15,13 +15,12 @@
 
 .scoreDiv {
     display: flex;
-    border-bottom: 1px rgba(86, 86, 246, 0.827) solid;
+    border-bottom: 1px rgb(74, 74, 74) solid;
     padding: 10px;
 }
 
 .scoreDiv:hover {
-    border-bottom: 1px black solid;
-    background-color: bisque;
+    background-color: rgb(235, 218, 198);
 }
 
 .scoreDiv .scoreRank {

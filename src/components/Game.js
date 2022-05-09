@@ -3,15 +3,19 @@ import mainImage from '../mainImage2.png';
 //To Do: Have the coords of mons obj in the backend to validate and call it every time I guess (or maybe once with the 3 mons)
 import coordinatesOfPokemon from './coordinatesOfPokemon.js';
 import { useState, useEffect, setState } from 'react';
+import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.css';
 
 const originalWidth = 1080;
 const originalHeight = 1352;
 
-function Game({monsToFind}) {
+function Game({monsToFind, diffic}) {
   //States
   ///show or hide the context menu
   const [showTagCircle, setShowTagCircle] = useState(false);
+  ///show or hide game over form
+  const [showGameOver, setShowGameOver] = useState(false);
+  
   ///keep current size of image
   const [currentSize, setCurrentSize] = useState({
     x: undefined,
@@ -75,8 +79,8 @@ function Game({monsToFind}) {
   return (
     <div id="Game" style={styleValidation}>
       <div id='monsImgContainer'>
-        {monsToFindImgs.map(elem => 
-            <img src={elem} alt='...'/>
+        {monsToFindImgs.map((elem, index) => 
+            <img src={elem} alt='...' key={index}/>
           )}
       </div>
       <div id='mainImgContainer' >
@@ -86,17 +90,18 @@ function Game({monsToFind}) {
                               monsToFindImgs={monsToFindImgs} localMonsToFind={localMonsToFind} 
                               setShowTagCircle={setShowTagCircle} setStyleValidation={setStyleValidation}
                               setLocalMonsToFind={setLocalMonsToFind} setMonsToFindImgs={setMonsToFindImgs}
-                              monsToFind={monsToFind}
+                              monsToFind={monsToFind} setShowGameOver={setShowGameOver}
                               />}
       </div>
+      {showGameOver && <GameOverScreen setShowGameOver={setShowGameOver} diffic={diffic}/> }
     </div>
   );
 }
 
 
 
-
-function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation, monsToFind}) {
+//Yes I know, the number of props is ridiculous
+function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation, monsToFind, setShowGameOver}) {
   //Main function for when the context menu is clicked
   function handleContextMenuClick(e) {
     let name = getNameOfMon(e);
@@ -138,7 +143,8 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
       setLocalMonsToFind(monsArr);
       setMonsToFindImgs(monsImgsArr);
       if(monsArr.length == 0) {
-        gameOver(monsToFind);
+        gameOver();
+        setShowGameOver(true);
       }
     } else {
       validationColor('red');
@@ -154,18 +160,9 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
   }
 
   //Helper function for game over (user won)
-  function gameOver(originalMons) {
-    let diffic = '';
-    if(originalMons.join('') == 'wobbuffetelectrodewailord') {
-      diffic = 'easy';
-    } else if(originalMons.join('') == 'mewkabutopshitmontop') {
-      diffic = 'normal';
-    } else if(originalMons.join('') == 'shuckledoduoyamask') {
-      diffic = 'hard';
-    } else {
-      diffic = 'random';
-    }
-    console.log(diffic);
+  function gameOver() {
+    
+    console.log('');
   }
 
   return(
@@ -180,6 +177,33 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
         }
       </div>
     </div> 
+  )
+}
+
+
+
+
+function GameOverScreen({setShowGameOver, diffic}) {
+  let capDiffic = diffic[0].toUpperCase() + diffic.slice(1);
+
+  function handleSubmit() {
+  //Subo Name y Time a firebase
+  setShowGameOver(false);
+  }
+
+  return(
+    <div className='GameOverScreen'>
+      <div className='formContainer box'>
+        <p className='title has-text-centered'>You Win!</p>
+        <p className='subtitle'>Add your record to the leaderboard</p>
+        <div className='has-text-justified'>
+          <p>Difficulty: {capDiffic}</p>
+          <p>Your time: 35m20s</p>
+        </div>
+        <input className='input' type='text' placeholder='name'/>
+        <Link to='/leaderboard' className='button' onClick={handleSubmit}>Submit</Link>
+      </div>
+    </div>
   )
 }
 

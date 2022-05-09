@@ -14,15 +14,17 @@ import 'bulma/css/bulma.css';
 function App() {
   //State
   ///state of mons to find
-  const [monsToFind, setMonsToFind] = useState(['bulbasaur', 'squirtle', 'charmander']);
+  const [monsToFind, setMonsToFind] = useState(['wobbuffet', 'electrode', 'wailord']);
+  ///state of difficulty
+  const [diffic, setDiffic] = useState('easy');
 
 
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home setMonsToFind={setMonsToFind}/>} />
-        <Route path="game" element={<Game monsToFind={monsToFind}/>} />
+        <Route path="/" element={<Home setMonsToFind={setMonsToFind} setDiffic={setDiffic}/>} />
+        <Route path="game" element={<Game monsToFind={monsToFind} diffic={diffic}/>} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="about" element={<About />} />
       </Routes>

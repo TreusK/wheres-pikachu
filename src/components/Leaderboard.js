@@ -92,7 +92,7 @@ function Top30({scores, idProp, imgSet}) {
     <div className='Top30 message' id={idProp}>
       <div className='top30Head message-header'>
         <h2>{'Top 30 ' + diff}</h2>
-        <img src={imgSet}/>
+        <img src={imgSet} alt='imgSet'/>
       </div>
       <div className='top30Body message-body'>
         {scores.map((elem, index) => 

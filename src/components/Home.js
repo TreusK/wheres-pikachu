@@ -22,7 +22,7 @@ const objOfMons = {
     let arrOfThreeRandoms = [];
     do {
       let rndom = Math.floor(Math.random() * 74);
-      if(!arrOfThreeRandoms.includes(allNames[rndom])) {
+      if(!arrOfThreeRandoms.includes(allNames[rndom]) && allNames[rndom] !== undefined) {
         arrOfThreeRandoms.push(allNames[rndom]);
       }
     } while (arrOfThreeRandoms.length < 3);
@@ -31,7 +31,7 @@ const objOfMons = {
 }
 
 //Component Home
-function Home({ setMonsToFind }) {
+function Home({ setMonsToFind, setDiffic }) {
 
   //Setting the monsToFind state depending on the difficulty button pressed
   function setMons(e) {
@@ -41,6 +41,7 @@ function Home({ setMonsToFind }) {
     } else {
       setMonsToFind(objOfMons.random());
     }
+    setDiffic(textValue);
   }
 
   return (
