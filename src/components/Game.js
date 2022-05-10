@@ -9,12 +9,14 @@ import 'bulma/css/bulma.css';
 const originalWidth = 1080;
 const originalHeight = 1352;
 
-function Game({monsToFind, diffic}) {
+function Game({monsToFind, diffic, timer, setTimer}) {
   //States
   ///show or hide the context menu
   const [showTagCircle, setShowTagCircle] = useState(false);
   ///show or hide game over form
   const [showGameOver, setShowGameOver] = useState(false);
+  ///keep final score
+  const [score, setScore] = useState(0);
   
   ///keep current size of image
   const [currentSize, setCurrentSize] = useState({
@@ -54,6 +56,7 @@ function Game({monsToFind, diffic}) {
   //use effect to fetch images and hide context menu on resize
   function handleEffect() {
     fetch3Images();
+    setTimer(Date.now());
     window.addEventListener("resize", () => setShowTagCircle(false));
     return () => window.removeEventListener("resize", () => setShowTagCircle(false));
   }
@@ -75,6 +78,15 @@ function Game({monsToFind, diffic}) {
     setCoords({x: coordX, y: coordY});
   }
 
+  //Helper function to read ml better
+  function readMiliseconds(ml){
+    const second = 1000;
+    const minute = second * 60;
+    let minutes = Math.floor(ml / minute % 60);
+    let seconds = Math.floor(ml / second % 60);
+    return minutes + "m" + seconds + "s";
+  }
+
   //Return Component
   return (
     <div id="Game" style={styleValidation}>
@@ -90,10 +102,11 @@ function Game({monsToFind, diffic}) {
                               monsToFindImgs={monsToFindImgs} localMonsToFind={localMonsToFind} 
                               setShowTagCircle={setShowTagCircle} setStyleValidation={setStyleValidation}
                               setLocalMonsToFind={setLocalMonsToFind} setMonsToFindImgs={setMonsToFindImgs}
-                              monsToFind={monsToFind} setShowGameOver={setShowGameOver}
+                              monsToFind={monsToFind} setShowGameOver={setShowGameOver} timer={timer}
+                              setScore={setScore}
                               />}
       </div>
-      {showGameOver && <GameOverScreen setShowGameOver={setShowGameOver} diffic={diffic}/> }
+      {showGameOver && <GameOverScreen setShowGameOver={setShowGameOver} diffic={diffic} readMiliseconds={readMiliseconds} score={score}/> }
     </div>
   );
 }
@@ -101,7 +114,7 @@ function Game({monsToFind, diffic}) {
 
 
 //Yes I know, the number of props is ridiculous
-function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation, monsToFind, setShowGameOver}) {
+function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImgs, localMonsToFind, setLocalMonsToFind, setShowTagCircle, setStyleValidation, monsToFind, setShowGameOver, timer, setScore}) {
   //Main function for when the context menu is clicked
   function handleContextMenuClick(e) {
     let name = getNameOfMon(e);
@@ -161,9 +174,11 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
 
   //Helper function for game over (user won)
   function gameOver() {
-    
-    console.log('');
+    let endTimer = Date.now();
+    let scoreMl = endTimer - timer;
+    setScore(scoreMl);
   }
+  
 
   return(
     <div className='contextMenuContainer' style={{top: `${coordinates.y-40}px`, left: `${coordinates.x-40}px`}}>
@@ -183,24 +198,27 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
 
 
 
-function GameOverScreen({setShowGameOver, diffic}) {
+function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds}) {
   let capDiffic = diffic[0].toUpperCase() + diffic.slice(1);
+  let readableScore = readMiliseconds(score);
 
   function handleSubmit() {
-  //Subo Name y Time a firebase
+  //Subo Name y Time en Diff a firebase
   setShowGameOver(false);
   }
 
   return(
     <div className='GameOverScreen'>
-      <div className='formContainer box'>
-        <p className='title has-text-centered'>You Win!</p>
+      <div className='formContainer box p-5'>
+        <p className='title has-text-centered'>You Caught Them All!</p>
+        <hr/>
         <p className='subtitle'>Add your record to the leaderboard</p>
+        <input className='input' type='text' placeholder='your name'/>
         <div className='has-text-justified'>
-          <p>Difficulty: {capDiffic}</p>
-          <p>Your time: 35m20s</p>
+          <p>Difficulty - {capDiffic}</p>
+          <p>Time - {readableScore}</p>
         </div>
-        <input className='input' type='text' placeholder='name'/>
+        <hr/>
         <Link to='/leaderboard' className='button' onClick={handleSubmit}>Submit</Link>
       </div>
     </div>

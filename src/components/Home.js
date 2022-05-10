@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom';
 import './styles/Home.css';
+import easyB from '../easyBulbasaur.png';
+import normalS from '../normalSquirtle.png';
+import hardC from '../hardCharmander.png';
+import randomQ from '../randomQuestion.png';
 
 //Array of names of mons, to use with random
 const allNames = ['wobbuffet', 'wailord', 'electrode', 'mew', 'kabutops', 'hitmontop', 'shuckle', 'doduo', 'yamask', 
@@ -46,22 +50,24 @@ function Home({ setMonsToFind, setDiffic }) {
 
   return (
     <div className="Home">
-      Extra fluff here
+      <hr/>
       <div id='difficultyContainer' className='box'>
-        <div className='btnContainer'>
-          <img/>
+        <h1 className='has-text-centered is-size-3'>Choose your starter!</h1>
+        <hr/>
+        <div className='btnContainer is-flex is-align-items-center'>
+          <img src={easyB}/>
           <Link to='/game' className='button' onClick={setMons}>Easy</Link>
         </div>
-        <div className='btnContainer'>
-          <img/>
+        <div className='btnContainer is-flex is-align-items-center'>
+          <img src={normalS}/>
           <Link to='/game' className='button' onClick={setMons}>Normal</Link>
         </div>
-        <div className='btnContainer'>
-          <img/>
+        <div className='btnContainer is-flex is-align-items-center'>
+          <img src={hardC}/>
           <Link to='/game' className='button' onClick={setMons}>Hard</Link>
         </div>
-        <div className='btnContainer'>
-          <img/>
+        <div className='btnContainer is-flex is-align-items-center'>
+          <img src={randomQ}/>
           <Link to='/game' className='button' onClick={setMons}>Random</Link>
         </div>
       </div>
