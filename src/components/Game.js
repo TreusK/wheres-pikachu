@@ -4,12 +4,14 @@ import mainImage from '../mainImage2.png';
 import coordinatesOfPokemon from './coordinatesOfPokemon.js';
 import { useState, useEffect, setState } from 'react';
 import { Link } from 'react-router-dom';
+import {db} from '../firebase-config';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 import 'bulma/css/bulma.css';
 
 const originalWidth = 1080;
 const originalHeight = 1352;
 
-function Game({monsToFind, diffic, timer, setTimer}) {
+function Game({monsToFind, diffic, timer, setTimer, setLeaderboard}) {
   //States
   ///show or hide the context menu
   const [showTagCircle, setShowTagCircle] = useState(false);
@@ -84,6 +86,11 @@ function Game({monsToFind, diffic, timer, setTimer}) {
     const minute = second * 60;
     let minutes = Math.floor(ml / minute % 60);
     let seconds = Math.floor(ml / second % 60);
+    if(minutes == 0) {
+      return seconds+"s";
+    } else if(seconds == 0) {
+      return minutes+"m";
+    }
     return minutes + "m" + seconds + "s";
   }
 
@@ -106,7 +113,7 @@ function Game({monsToFind, diffic, timer, setTimer}) {
                               setScore={setScore}
                               />}
       </div>
-      {showGameOver && <GameOverScreen setShowGameOver={setShowGameOver} diffic={diffic} readMiliseconds={readMiliseconds} score={score}/> }
+      {showGameOver && <GameOverScreen setShowGameOver={setShowGameOver} diffic={diffic} readMiliseconds={readMiliseconds} score={score} setLeaderboard={setLeaderboard}/> }
     </div>
   );
 }
@@ -198,13 +205,27 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
 
 
 
-function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds}) {
+function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLeaderboard}) {
+  const [inputValue, setInputValue] = useState('');
+
   let capDiffic = diffic[0].toUpperCase() + diffic.slice(1);
   let readableScore = readMiliseconds(score);
 
-  function handleSubmit() {
-  //Subo Name y Time en Diff a firebase
-  setShowGameOver(false);
+  function handleInputChange(e) {
+    e.preventDefault();
+    setInputValue(e.target.value);
+  }
+
+  async function handleSubmit(difficulty, mlScore, inpValue) {
+    let reference = doc(db, 'leaderBoard', 'top'+difficulty);
+    let refSnap = await getDoc(reference);
+    if(Object.entries(refSnap.data()).length >= 10) {
+      console.log('Too many dudes');
+    } else {
+      console.log('Room still');
+    }
+    //setLeaderboard['setTop'+capDiffic]()
+    setShowGameOver(false);
   }
 
   return(
@@ -213,13 +234,13 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds}) {
         <p className='title has-text-centered'>You Caught Them All!</p>
         <hr/>
         <p className='subtitle'>Add your record to the leaderboard</p>
-        <input className='input' type='text' placeholder='your name'/>
+        <input onChange={(e) => handleInputChange(e)} value={inputValue} className='input' type='text' placeholder='your name'/>
         <div className='has-text-justified'>
           <p>Difficulty - {capDiffic}</p>
           <p>Time - {readableScore}</p>
         </div>
         <hr/>
-        <Link to='/leaderboard' className='button' onClick={handleSubmit}>Submit</Link>
+        <Link to='/leaderboard' className='button' onClick={() => handleSubmit(capDiffic, score, inputValue)}>Submit</Link>
       </div>
     </div>
   )
