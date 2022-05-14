@@ -209,6 +209,7 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
   const [inputValue, setInputValue] = useState('');
 
   let capDiffic = diffic[0].toUpperCase() + diffic.slice(1);
+  let lowDiffic = diffic[0];
   let readableScore = readMiliseconds(score);
 
   function handleInputChange(e) {
@@ -216,15 +217,36 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
     setInputValue(e.target.value);
   }
 
-  async function handleSubmit(difficulty, mlScore, inpValue) {
+  //Helper function to see if the new score is gud enough to be in the Top 10
+  function checkIfGudEnuf(scoreMl, arrOfScores) {
+    arrOfScores
+    .sort((a,b) => {
+      return a[1][1] - b[1][1];
+    });
+    let gudEnuf = false;
+    let scoreToEdit = '';
+    for(let score of arrOfScores) {
+      if(score[1][1] > scoreMl) {
+        gudEnuf = true;
+        scoreToEdit = score[0];
+      }
+    }
+    console.log(gudEnuf, scoreToEdit);
+  }
+
+  async function handleSubmit(difficulty, mlScore, inpValue, lowCaseDiffic) {
     let reference = doc(db, 'leaderBoard', 'top'+difficulty);
     let refSnap = await getDoc(reference);
-    if(Object.entries(refSnap.data()).length >= 10) {
-      console.log('Too many dudes');
+    let docLenght = Object.entries(refSnap.data()).length;
+    if(docLenght >= 10) {
+      checkIfGudEnuf(mlScore, Object.entries(refSnap.data()));
     } else {
-      console.log('Room still');
+      let next = docLenght+1;
+      let next2 = lowCaseDiffic+next;
+      await setDoc(reference, { [next2]: [inpValue, mlScore] }, { merge: true });
+      setLeaderboard['setTop'+capDiffic](Object.entries(refSnap.data()));
     }
-    //setLeaderboard['setTop'+capDiffic]()
+    //Problem: Estoy seteando el doc en tiempos diferentes q el estado, asique hay q arreglar eso
     setShowGameOver(false);
   }
 
@@ -240,7 +262,7 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
           <p>Time - {readableScore}</p>
         </div>
         <hr/>
-        <Link to='/leaderboard' className='button' onClick={() => handleSubmit(capDiffic, score, inputValue)}>Submit</Link>
+        <Link to='/leaderboard' className='button' onClick={() => handleSubmit(capDiffic, score, inputValue, lowDiffic)}>Submit</Link>
       </div>
     </div>
   )
