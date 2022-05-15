@@ -3,10 +3,9 @@ import easyImgs from '../easyImgs.jpg';
 import normalImgs from '../normalImgs.jpg';
 import hardImgs from '../hardImgs.jpg';
 import randomImgs from '../randomImgs.png';
-import {useEffect} from 'react';
 
 //Leaderboard pide el estado desde firebase para mostrar pares de nombres y tiempos.
-function Leaderboard({difficulty, leaderboard}) {
+function Leaderboard({leaderboard}) {
 
   let defaultEasy = [
     ['e1', ['Treus', 10000]],
@@ -35,17 +34,17 @@ function Leaderboard({difficulty, leaderboard}) {
         <a href="#topRandom" className='button is-link is-light is-small'>Random</a>
       </div>
       <div id='scoresContainer'>
-        <Top30 idProp='topEasy' scores={leaderboard.topEasy || defaultEasy} imgSet={easyImgs}/>
-        <Top30 idProp='topNormal' scores={leaderboard.topNormal || defaultNormal} imgSet={normalImgs}/>
-        <Top30 idProp='topHard' scores={leaderboard.topHard || defaultHard} imgSet={hardImgs}/>
-        <Top30 idProp='topRandom' scores={leaderboard.topRandom || defaultRandom} imgSet={randomImgs}/>
+        <Top10 idProp='topEasy' scores={leaderboard.topEasy || defaultEasy} imgSet={easyImgs}/>
+        <Top10 idProp='topNormal' scores={leaderboard.topNormal || defaultNormal} imgSet={normalImgs}/>
+        <Top10 idProp='topHard' scores={leaderboard.topHard || defaultHard} imgSet={hardImgs}/>
+        <Top10 idProp='topRandom' scores={leaderboard.topRandom || defaultRandom} imgSet={randomImgs}/>
       </div>
     </div>
   );
 }
 
 
-function Top30({scores, idProp, imgSet}) {
+function Top10({scores, idProp, imgSet}) {
   let diff = idProp.slice(3);
 
   function readMiliseconds(ml){
@@ -64,7 +63,7 @@ function Top30({scores, idProp, imgSet}) {
   return(
     <div className='Top30 message' id={idProp}>
       <div className='top30Head message-header'>
-        <h2>{'Top 30 ' + diff}</h2>
+        <h2>{'Top 10 ' + diff}</h2>
         <img src={imgSet} alt='imgSet'/>
       </div>
       <div className='top30Body message-body'>

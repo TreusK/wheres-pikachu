@@ -5,7 +5,7 @@ import coordinatesOfPokemon from './coordinatesOfPokemon.js';
 import { useState, useEffect, setState } from 'react';
 import { Link } from 'react-router-dom';
 import {db} from '../firebase-config';
-import {doc, getDoc, setDoc} from 'firebase/firestore';
+import {doc, getDoc, setDoc, updateDoc} from 'firebase/firestore';
 import 'bulma/css/bulma.css';
 
 const originalWidth = 1080;
@@ -86,9 +86,9 @@ function Game({monsToFind, diffic, timer, setTimer, setLeaderboard}) {
     const minute = second * 60;
     let minutes = Math.floor(ml / minute % 60);
     let seconds = Math.floor(ml / second % 60);
-    if(minutes == 0) {
+    if(minutes === 0) {
       return seconds+"s";
-    } else if(seconds == 0) {
+    } else if(seconds === 0) {
       return minutes+"m";
     }
     return minutes + "m" + seconds + "s";
@@ -103,7 +103,7 @@ function Game({monsToFind, diffic, timer, setTimer, setLeaderboard}) {
           )}
       </div>
       <div id='mainImgContainer' >
-        <img id='mainImg' src={mainImage} onClick={handleGameClick}/>
+        <img id='mainImg' src={mainImage} onClick={handleGameClick} alt='mainMainMainImg'/>
         {showTagCircle && <ContextMenu 
                               currentSize={currentSize} coordinates={coords} 
                               monsToFindImgs={monsToFindImgs} localMonsToFind={localMonsToFind} 
@@ -134,7 +134,7 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
   //Helper function to get the name of the mon in the context menu clicked
   function getNameOfMon(event) {
     let index;
-    (event.target.tagName != 'DIV') 
+    (event.target.tagName !== 'DIV') 
       ? index = +event.target.parentElement.classList[0][1]
       : index = +event.target.classList[0][1];
     return localMonsToFind[index];
@@ -162,7 +162,7 @@ function ContextMenu({currentSize, coordinates, monsToFindImgs, setMonsToFindImg
       monsArr.splice(index, 1);
       setLocalMonsToFind(monsArr);
       setMonsToFindImgs(monsImgsArr);
-      if(monsArr.length == 0) {
+      if(monsArr.length === 0) {
         gameOver();
         setShowGameOver(true);
       }
@@ -223,30 +223,37 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
     .sort((a,b) => {
       return a[1][1] - b[1][1];
     });
-    let gudEnuf = false;
     let scoreToEdit = '';
-    for(let score of arrOfScores) {
-      if(score[1][1] > scoreMl) {
-        gudEnuf = true;
-        scoreToEdit = score[0];
-      }
+    if(arrOfScores[9][1][1] > scoreMl) {
+      scoreToEdit = arrOfScores[9][0];
     }
-    console.log(gudEnuf, scoreToEdit);
+    return scoreToEdit;
   }
 
   async function handleSubmit(difficulty, mlScore, inpValue, lowCaseDiffic) {
     let reference = doc(db, 'leaderBoard', 'top'+difficulty);
     let refSnap = await getDoc(reference);
     let docLenght = Object.entries(refSnap.data()).length;
-    if(docLenght >= 10) {
-      checkIfGudEnuf(mlScore, Object.entries(refSnap.data()));
+    let localArr = Object.entries(refSnap.data());
+    localArr.sort((a,b) => {
+      return a[1][1] - b[1][1];
+    });
+    if(docLenght >= 10) { 
+      let scoreToEdit = checkIfGudEnuf(mlScore, Object.entries(refSnap.data()));
+      if(scoreToEdit !== '') {
+        localArr[9][1][0] = inpValue;
+        localArr[9][1][1] = mlScore;
+        setLeaderboard['setTop'+capDiffic](localArr);
+        await updateDoc(reference, {
+          [scoreToEdit]: [inpValue, mlScore]
+        })
+      }
     } else {
       let next = docLenght+1;
       let next2 = lowCaseDiffic+next;
+      setLeaderboard['setTop'+capDiffic](Object.entries(refSnap.data()).concat([[next2, [inpValue, mlScore]]]));
       await setDoc(reference, { [next2]: [inpValue, mlScore] }, { merge: true });
-      setLeaderboard['setTop'+capDiffic](Object.entries(refSnap.data()));
     }
-    //Problem: Estoy seteando el doc en tiempos diferentes q el estado, asique hay q arreglar eso
     setShowGameOver(false);
   }
 
@@ -256,7 +263,7 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
         <p className='title has-text-centered'>You Caught Them All!</p>
         <hr/>
         <p className='subtitle'>Add your record to the leaderboard</p>
-        <input onChange={(e) => handleInputChange(e)} value={inputValue} className='input' type='text' placeholder='your name'/>
+        <input onChange={(e) => handleInputChange(e)} value={inputValue} maxLength='10' className='input' type='text' placeholder='your name'/>
         <div className='has-text-justified'>
           <p>Difficulty - {capDiffic}</p>
           <p>Time - {readableScore}</p>
