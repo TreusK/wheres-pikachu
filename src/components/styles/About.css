@@ -1,0 +1,18 @@
+.aboutInfoContainer {
+    width: 60%;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.otherContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.projectCard {
+    width: 300px;
+    border-left: solid 2px gray;
+    margin: 10px;
+    padding: 10px;
+}
