@@ -1,8 +1,7 @@
 import './styles/Game.css';
-import mainImage from '../mainImage2.png';
-//To Do: Have the coords of mons obj in the backend to validate and call it every time I guess (or maybe once with the 3 mons)
+import mainImage from '../imgs/mainImage.png';
 import coordinatesOfPokemon from './coordinatesOfPokemon.js';
-import { useState, useEffect, setState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {db} from '../firebase-config';
 import {doc, getDoc, setDoc, updateDoc} from 'firebase/firestore';
@@ -274,6 +273,6 @@ function GameOverScreen({setShowGameOver, diffic, score, readMiliseconds, setLea
     </div>
   )
 }
-
+ 
 
 export default Game;

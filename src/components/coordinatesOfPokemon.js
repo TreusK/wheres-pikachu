@@ -295,6 +295,19 @@ const coords = {
         x: 1047,
         y: 290,
     },
+    tropius: {
+        x: 684,
+        y: 233,
+    },
+    banette: {
+        x: 179,
+        y: 304,
+    },
+    accelgor: {
+        x: 260,
+        y: 644,
+    },
 }
 
 export default coords;
+

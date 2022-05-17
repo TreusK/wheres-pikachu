@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import pikachuIcon from '../pika.png';
+import pikachuIcon from '../imgs/pika.png';
 import './styles/Navbar.css';
 
 function Navbar() {
@@ -7,7 +7,7 @@ function Navbar() {
         <nav className="navbar Navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link className="navbar-item" to='/'>
-                    <img id='pikachuIconLogo' src={pikachuIcon}/>
+                    <img id='pikachuIconLogo' src={pikachuIcon} alt='pikachuLogo'/>
                 </Link>
             </div>
 

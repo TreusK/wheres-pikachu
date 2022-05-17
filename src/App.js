@@ -6,18 +6,15 @@ import Leaderboard from './components/Leaderboard';
 import About from './components/About';
 //Library imports
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, setState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {db} from './firebase-config';
-import {collection, doc, getDoc} from 'firebase/firestore';
+import {doc, getDoc} from 'firebase/firestore';
 //Css imports
-import './App.css';
+import './App.css'; 
 import 'bulma/css/bulma.css';
 
 function App() {
-  const easyRef = doc(db, 'leaderBoard', 'topEasy');
-  const normalRef = doc(db, 'leaderBoard', 'topNormal');
-  const hardRef = doc(db, 'leaderBoard', 'topHard');
-  const randomRef = doc(db, 'leaderBoard', 'topRandom');
+
 
   //State
   ///state of mons to find
@@ -34,6 +31,10 @@ function App() {
 
   useEffect(() => {
     async function getLeaderBoard() {
+      const easyRef = doc(db, 'leaderBoard', 'topEasy');
+      const normalRef = doc(db, 'leaderBoard', 'topNormal');
+      const hardRef = doc(db, 'leaderBoard', 'topHard');
+      const randomRef = doc(db, 'leaderBoard', 'topRandom'); 
       let responseEasy = await getDoc(easyRef);
       let responseNormal = await getDoc(normalRef);
       let responseHard = await getDoc(hardRef);
@@ -62,19 +63,5 @@ function App() {
 
 export default App;
 
-//Componentes a necesitar:
-///Navbar, con Logo y 2 links (leaderboard, about)
 
-///Home, con detalles y ChooseDifficulty component
-////ChooseDifficulty tiene 5 botones, easy normal hard, random impossible
-
-///Game, con la imagen de fondo, un div abajo del navbar con los bichos a encontrar, y la logica del juego
-
-///Leaderboard, con informacion del backend
-
-///About, con boludeces y github link
-
-///Preguntas
-//La validacion de X Y de cada bicho, es cada vez que clickeo? O puedo pedir las coord al server en cuanto empieza el juego
-// una sola vez, y comparar desde ahi en cada click?
 

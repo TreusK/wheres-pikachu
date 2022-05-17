@@ -1,8 +1,8 @@
 import './styles/Leaderboard.css';
-import easyImgs from '../easyImgs.jpg';
-import normalImgs from '../normalImgs.jpg';
-import hardImgs from '../hardImgs.jpg';
-import randomImgs from '../randomImgs.png';
+import easyImgs from '../imgs/easyImgs.jpg';
+import normalImgs from '../imgs/normalImgs.jpg';
+import hardImgs from '../imgs/hardImgs.jpg';
+import randomImgs from '../imgs/randomImgs.png';
 
 //Leaderboard pide el estado desde firebase para mostrar pares de nombres y tiempos.
 function Leaderboard({leaderboard}) {
@@ -52,9 +52,9 @@ function Top10({scores, idProp, imgSet}) {
     const minute = second * 60;
     let minutes = Math.floor(ml / minute % 60);
     let seconds = Math.floor(ml / second % 60);
-    if(minutes == 0) {
+    if(minutes === 0) {
       return seconds+"s";
-    } else if(seconds == 0) {
+    } else if(seconds === 0) {
       return minutes+"m";
     }
     return minutes + "m" + seconds + "s";
@@ -66,7 +66,7 @@ function Top10({scores, idProp, imgSet}) {
         <h2>{'Top 10 ' + diff}</h2>
         <img src={imgSet} alt='imgSet'/>
       </div>
-      <div className='top30Body message-body'>
+      <div className='top30Body message-body'> 
         {scores
         .sort((a,b) => {
           return a[1][1] - b[1][1];
